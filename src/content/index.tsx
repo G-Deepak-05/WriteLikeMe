@@ -141,8 +141,9 @@ function WriteLikeMeModal() {
   if (!isOpen) return null;
 
   const { highlighted, count: aiPhraseCount } = highlightAIPhrases(originalText);
-  // Base AI score is 35%, plus 15% for each detected robotic phrase (max 99%)
-  const aiScore = Math.min(99, 35 + (aiPhraseCount * 15));
+  const totalWords = originalText.split(/\\s+/).length;
+  // Make the score proportional to the total word count so long emails aren't unfairly penalized
+  const aiScore = Math.min(99, Math.round((aiPhraseCount / Math.max(totalWords, 10)) * 100 * 8));
 
   return (
     <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 font-sans">
